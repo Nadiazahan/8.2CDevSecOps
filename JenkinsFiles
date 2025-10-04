@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+
+    environment {
+        EMAIL_RECIPIENTS = 'nadia66royal@gmail.com'
+    }
+
+    stages {
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                sh 'exit 0'
+            }
+            post {
+                success {
+                    emailext(
+                        subject: "Test Stage Passed",
+                        body: "The 'Test' stage passed successfully.",
+                        to: "${EMAIL_RECIPIENTS}",
+                        attachLog: true
+                    )
+                }
+                failure {
+                    emailext(
+                        subject: "Test Stage Failed",
+                        body: "The 'Test' stage failed.",
+                        to: "${EMAIL_RECIPIENTS}",
+                        attachLog: true
+                    )
+                }
+            }
+        }
+
+        stage('Security Scan') {
+            steps {
+                echo 'Performing security scan...'
+                sh 'exit 0'
+            }
+            post {
+                success {
+                    emailext(
+                        subject: "Security Scan Passed",
+                        body: "Security scan completed successfully.",
+                        to: "${EMAIL_RECIPIENTS}",
+                        attachLog: true
+                    )
+                }
+                failure {
+                    emailext(
+                        subject: "Security Scan Failed",
+                        body: "Security scan failed.",
+                        to: "${EMAIL_RECIPIENTS}",
+                        attachLog: true
+                    )
+                }
+            }
+        }
+    }
+}
